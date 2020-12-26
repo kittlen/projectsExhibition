@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.schoolProjects.mapper.WorksTypeDao">
+    <resultMap id="typeResultMap" type="com.schoolProjects.entity.WorksType">
+        <id column="typeId" property="typeId"></id>
+        <result property="typeName" column="typeName"/>
+        <result property="createdDate" column="createdDate"/>
+    </resultMap>
+
+    <select id="selectAll" resultType="WorksType">
+        select * from t_type ;
+    </select>
+
+    <insert id="addType">
+        insert into t_type
+        (typeId, typeName, createdDate) values
+        (#{typeId},#{typeName},#{createdDate});
+    </insert>
+
+    <delete id="deleteType" >
+        delete from t_type where typeId=#{typeId};
+    </delete>
+</mapper>

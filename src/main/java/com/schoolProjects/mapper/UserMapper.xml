@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.schoolProjects.mapper.UserDao">
+    <resultMap id="userResultMap" type="com.schoolProjects.entity.User">
+        <id column="userId" property="userId"></id>
+        <result property="nickName" column="nickName"/>
+        <result property="userName" column="userName"/>
+        <result property="phone" column="phone"/>
+        <result property="avatar" column="avatar"/>
+        <result property="gender" column="gender"/>
+        <result property="password" column="password"/>
+        <result property="mailbox" column="mailbox"/>
+        <result property="remake" column="remake"/>
+        <result property="createdDate" column="createdDate"/>
+    </resultMap>
+
+    <select id="getAllCount" resultType="Integer">
+        select count(1) from t_user;
+    </select>
+
+    <select id="selectUserBy" resultMap="userResultMap">
+        select * from t_user
+        <where>
+            <if test="userId!=null and userId!=''">
+                userId = #{userId}
+            </if>
+            <if test="userName!=null and userName!=''">
+                and userName = #{userName}
+            </if>
+            <if test="phone!=null and phone!=''">
+                and phone = #{phone}
+            </if>
+            <if test="gender!=null and gender!=''">
+                and gender = #{gender}
+            </if>
+            <if test="mailbox!=null and mailbox!=''">
+                and mailbox = #{mailbox}
+            </if>
+        </where>
+    </select>
+
+    <select id="login" resultMap="userResultMap">
+        select * from t_user
+        <where>
+            <if test="userId!=null and userId!=''">
+                userId = #{userId}
+            </if>
+            <if test="phone!=null and phone!=''">
+                and phone = #{phone}
+            </if>
+            <if test="mailbox!=null and mailbox!=''">
+                and mailbox = #{mailbox}
+            </if>
+            <if test="password!=null and password!=''">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUser" parameterType="User">
+        update t_user
+        <set>
+            <if test="nickName!=null and nickName!=''">
+                nickName = #{nickName},
+            </if>
+            <if test="userName!=null and userName!=''">
+                userName = #{userName},
+            </if>
+            <if test="avatar!=null and avatar!=''">
+                avatar = #{avatar},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone = #{phone},
+            </if>
+            <if test="gender!=null and gender!=''">
+                gender = #{gender},
+            </if>
+            <if test="mailbox!=null and mailbox!=''">
+                mailbox = #{mailbox},
+            </if>
+            <if test="remake!=null and remake!=''">
+                remake = #{remake},
+            </if>
+            <if test="password!=null and password!=''">
+                password = #{password},
+            </if>
+        </set>
+        where userId=#{userId}
+    </update>
+    <insert id="addUser">
+        insert into t_user
+        (userId, userName, nickName, avatar, phone,gender,password,mailbox,remake,createdDate) values
+        (#{userId},#{userName},#{nickName},
+        #{avatar},#{phone},#{gender},
+        #{password},#{mailbox},#{remake},#{createdDate});
+    </insert>
+
+</mapper>

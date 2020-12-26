@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.schoolProjects.mapper.WorksDao">
+    <resultMap id="worksResultMap" type="com.schoolProjects.entity.Works">
+        <id column="worksId" property="worksId"></id>
+        <result property="worksTitle" column="worksTitle"/>
+        <result property="worksIntroduction" column="worksIntroduction"/>
+        <result property="worksUris" column="worksUris"/>
+        <result property="worksStyle" column="worksStyle"/>
+        <result property="worksCover" column="worksCover"/>
+        <result property="createdDate" column="createdDate"/>
+        <association property="user" javaType="com.schoolProjects.entity.User" autoMapping="true">
+            <id column="userId" property="userId"></id>
+            <result property="nickName" column="nickName"/>
+            <result property="userName" column="userName"/>
+            <result property="phone" column="phone"/>
+            <result property="avatar" column="avatar"/>
+            <result property="gender" column="gender"/>
+            <result property="mailbox" column="mailbox"/>
+            <result property="remake" column="remake"/>
+        </association>
+        <association property="worksType" javaType="com.schoolProjects.entity.WorksType" autoMapping="true">
+            <id column="typeId" property="typeId"></id>
+            <result property="typeName" column="typeName"/>
+        </association>
+    </resultMap>
+
+    <insert id="addWorks">
+        insert into t_works
+        (worksId,userId,worksTitle, worksIntroduction, worksUris, worksStyle,createdDate,worksTypeId,worksCover) values
+        (#{worksId},#{worksTitle},#{user.userId},#{worksIntroduction},
+        #{worksUris},#{worksStyle},#{createdDate},#{worksCover},
+        #{worksType.typeId});
+    </insert>
+
+
+    <delete id="delete">
+        delete from t_works where worksId=#{worksId};
+    </delete>
+
+    <select id="getAllCountBy" resultType="Integer">
+        select count(1) from t_works
+        <where>
+            <if test="worksTitle!=null and worksTitle!=''">
+                worksTitle like  concat('%',#{works.worksTitle},'%')
+            </if>
+            <if test="worksType!=null and worksType!=''">
+                and worksTypeId = #{worksType.typeId}
+            </if>
+            <if test="createdDate!=null and createdDate!=''">
+                and createdDate >= #{createdDate}
+            </if>
+        </where>;
+    </select>
+
+    <select id="selectWorksBy" resultMap="worksResultMap">
+        select * from t_works as a
+        left join t_user as b on a.userId=b.userId
+        left join t_worksType as c on a.worksTypeId=c.typeId
+        <where>
+            <if test="works.worksTitle!=null and works.worksTitle!=''">
+                a.worksTitle like  concat('%',#{works.worksTitle},'%')
+            </if>
+            <if test="works.worksType.typeId!=null and works.worksType.typeId!=''">
+                and a.worksTypeId = #{works.worksType.typeId}
+            </if>
+            <if test="works.createdDate!=null and works.createdDate!=''">
+                and a.createdDate >= #{works.createdDate}
+            </if>
+        </where>
+        <if test="pageNumber!=null and pageNumber!=''and pageSize!=null and  pageSize!=''">
+            limit #{pageNumber},#{pageSize};
+        </if>
+    </select>
+
+    <select id="selectWorksById" resultMap="worksResultMap">
+        select * from t_works as a
+        left join t_user as b on a.userId=b.userId
+        left join t_worksType as c on a.worksTypeId=c.typeId
+        <where>
+                a.worksId = #{worksId};
+        </where>
+    </select>
+
+</mapper>
